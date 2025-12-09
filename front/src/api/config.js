@@ -1,4 +1,5 @@
 import axios from "axios";
+//URL de l’API, headers par défaut
 
 const instance = axios.create({
     baseURL: `${import.meta.env.VITE_API_URL}`

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Flag, LogOut } from 'lucide-react'
+//Barre de navigation globale
 
 export default function Header() {
   const token = localStorage.getItem("accessToken")

@@ -50,15 +50,30 @@ async function updateUser(userId, data) {
 }
 
 async function register(data) {
+  // Vérifie si l'utilisateur existe déjà
   const existingUser = await findUserByEmail(data.email);
 
   if (existingUser) {
     throw new Error("User already exists");
   }
 
+  // Concatène firstname + lastname dans name
+  data.name = `${data.firstname} ${data.lastname}`;
+
+  // Hash le mot de passe
   const hashedPassword = await hashPassword(data.password);
   data.password = hashedPassword;
-  const user = await createUser(data);
+
+   // Création de l'utilisateur dans la base
+  const query = `
+    INSERT INTO users (email, password, name, verified)
+    VALUES (?, ?, ?, ?)
+  `;
+  const values = [data.email, data.password, data.name, 0];
+  const result = await db.prepare(query).run(values);
+
+  // Récupère l'utilisateur créé
+  const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
 
   // Send verification email
   sendVerificationEmail(user.email);

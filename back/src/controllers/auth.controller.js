@@ -17,6 +17,8 @@ async function register(c) {
 async function login(c) {
   try {
     const { email, password } = c.req.valid('json')
+    console.log("Login attempt:", email, password)
+
     const token = await authService.login(email, password)
 
     return c.json({ message: 'Login successful', token })
@@ -26,7 +28,6 @@ async function login(c) {
     return c.json({ error: error.message }, 401)
   }
 }
-
 
 async function forgotPassword(c) {
   try {

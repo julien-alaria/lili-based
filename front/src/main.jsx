@@ -8,7 +8,7 @@ import Home from "./page/home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Register from "./page/auth/register";
-
+// Point d’entrée React / Router
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,8 +17,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-
-
 
 const root = document.getElementById("root");
 ReactDOM.createRoot(root).render(
