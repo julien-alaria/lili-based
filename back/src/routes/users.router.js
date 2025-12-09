@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import db from '../db.js'; // Assure-toi que db.js initialise bien better-sqlite3
+import db from '../db.js'; 
 
 const usersRouter = new Hono();
 

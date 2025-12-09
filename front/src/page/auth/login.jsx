@@ -18,8 +18,8 @@ export default function Login() {
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "fatima.elmouhine@laplateforme.io",
-      password: "Atelier123"
+      email: "testUser2@mail.com",
+      password: "12345678"
 
     }
   })
@@ -32,7 +32,7 @@ export default function Login() {
       console.log("data", data)
       localStorage.setItem("accessToken", data.data.token.accessToken)
       localStorage.setItem("refreshToken", data.data.token.refreshToken)
-      window.location = "/"
+      window.location = "/me"
 
     },
 

@@ -1,6 +1,7 @@
 import instance from "./config";
 import axios from "axios"
 //Fonctions pour appeler le backend (login, register...)
+
 async function signIn(data) {
     return await instance.post("/api/auth/login", data)
 
@@ -31,15 +32,6 @@ async function listUsersExample() {
     //     return error
     // }
 
-//       try {
-//     const response = await axios.get("http://localhost:3000/api/users");
-//     return response.data; // doit être un tableau d'utilisateurs [{id, name, email, verified}, ...]
-//   } catch (error) {
-//     console.error("Erreur lors de la récupération des utilisateurs :", error);
-//     throw error; // React Query gère les erreurs si on throw
-//   }
-
-
   try {
     const response = await instance.get("/api/users"); // utilise instance pour la cohérence
     return response.data;
@@ -47,7 +39,6 @@ async function listUsersExample() {
     console.error("Erreur lors de la récupération des utilisateurs :", error);
     throw error;
   }
-
 
 }
 

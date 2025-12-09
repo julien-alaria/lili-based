@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { forgotPassword, login, register, resetPassword, sendVerification, verifyUserEmail } from "../controllers/auth.controller.js";
+import { authGuard } from "../middlewares/authguard.js";
+
 const authRouter = new Hono()
 
 authRouter.post(
@@ -62,5 +64,15 @@ authRouter.get(
   "/verify/:token",
   verifyUserEmail
 );
+
+authRouter.get(
+  "/me",
+  authGuard(),
+  (c) => {
+    const user = c.get("user");
+    return c.json(user);
+  }
+);
+
 
 export default authRouter;

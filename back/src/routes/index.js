@@ -11,9 +11,9 @@ const app = new Hono()
 
 // Autoriser le frontend à accéder à l'API
 app.use('*', cors({ origin: 'http://localhost:5173' }))
+
 app.get('/', (c) => c.text('Hello from Hono!'))
-app.route('/api/auth', authRouter)
-app.route('/api/users', usersRouter);
+
 app.get(
   '/authenticated',
   authGuard(),
@@ -22,4 +22,8 @@ app.get(
     return c.text('Authenticated route, hi ' + user.email)
   }
 )
+
+app.route('/api/auth', authRouter)
+app.route('/api/users', usersRouter);
+
 export default app
