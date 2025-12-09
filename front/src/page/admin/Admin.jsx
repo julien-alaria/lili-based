@@ -1,17 +1,36 @@
+import React, { useState, useEffect } from 'react';
 import { listUsersExample } from '@/api/auth'
-import { useQuery } from '@tanstack/react-query'
-import React, { useEffect } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 
 export default function Admin() {
+    const queryClient = useQueryClient();
+
+        // Nouveau user
+        const [newUser, setNewUser] = useState({ email: '', password: '', name: '' });
+
+        const createUserMutation = useMutation({
+            mutationFn: async (user) => {
+                const token = localStorage.getItem('accessToken');
+                return await axios.post('http://localhost:3000/api/users', user, {
+                headers: { Authorization: `Bearer ${token}` }
+                });
+            },
+            onSuccess: () => {
+                // v5 accepte queryKey directement
+                queryClient.invalidateQueries(['listUser']);
+                setNewUser({ email: '', password: '', name: '' });
+            },
+        });
+
+
     // Récupérer le user connecté
     const { data: currentUser, isLoading: userLoading, isError: userError } = useQuery({
         queryKey: ['me'], 
         queryFn: async () => {
             const token = localStorage.getItem('accessToken');
             if (!token) throw new Error('No token found');
-
             const res = await axios.get('http://localhost:3000/api/auth/me', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -42,6 +61,13 @@ export default function Admin() {
                     <li key={user.id}>{user?.name}, Email: {user.email}</li>
                 ))}
             </ol>
+
+            {/* FORMULAIRE CREATE */}
+            <h2 className='text-xl mt-4'>Créer un utilisateur</h2>
+                <input placeholder="Nom" value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})} />
+                <input placeholder="Email" value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})} />
+                <input type="password" placeholder="Mot de passe" value={newUser.password} onChange={e => setNewUser({...newUser, password: e.target.value})} />
+            <button onClick={() => createUserMutation.mutate(newUser)}>Créer</button>
 
             {/* Bouton pour revenir à /me */}
             <Link

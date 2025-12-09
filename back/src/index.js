@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import router from './routes/index.js'
+import usersRouter from './routes/users.router.js'
 
 const app = new Hono()
 
@@ -13,6 +14,8 @@ app.use('/api/*', cors({
 }))
 
 app.route('/', router)
+// Brancher le router users sous /api/users
+app.route('/api/users', usersRouter)
 
 const port = 3000
 console.log(`Server is running on http://localhost:${port}`)

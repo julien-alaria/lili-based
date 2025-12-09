@@ -1,11 +1,11 @@
-export const adminGuard = () => {
-  return async (c, next) => {
-    const user = c.get("user");
+// export const adminGuard = () => {
+//   return async (c, next) => {
+//     const user = c.get("user");
 
-    if (!user || user.role !== TRUE) {
-      return c.text("Access denied", 403);
-    }
+//     if (!user || user.role !== TRUE) {
+//       return c.text("Access denied", 403);
+//     }
 
-    await next();
-  };
-};
+//     await next();
+//   };
+// };
