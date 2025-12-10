@@ -1,4 +1,3 @@
-
 import authService from '../services/auth.service.js'
 
 async function register(c) {
@@ -21,7 +20,7 @@ async function login(c) {
 
     const token = await authService.login(email, password)
 
-    return c.json({ message: 'Login successful', token })
+    return c.json(token)
   } catch (error) {
     console.log("error:", error.message)
 

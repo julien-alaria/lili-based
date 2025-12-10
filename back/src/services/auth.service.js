@@ -21,10 +21,11 @@ async function findUserByEmail(email) {
 
 async function createUser(data) {
   const query = `
-    INSERT INTO users (email, password, name, verified)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (email, password, name, verified, role)
+    VALUES (?, ?, ?, ?, ?)
   `;
-  const values = [data.email, data.password, data.name, 0];
+  const role = data.role || 'user'; 
+  const values = [data.email, data.password, data.name, 1, role];
   const result = await db.prepare(query).run(values);
   return await db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
 }
@@ -76,7 +77,7 @@ async function register(data) {
   const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
 
   // Send verification email
-  sendVerificationEmail(user.email);
+  // sendVerificationEmail(user.email);
 
   return user;
 }
@@ -86,9 +87,21 @@ async function login(email, password) {
   if (!user || !(await comparePassword(password, user.password))) {
     throw new Error("Invalid credentials");
   }
-  if (!user.verified) throw new Error("user-not-verified");
+  // if (!user.verified) throw new Error("user-not-verified");
 
-  return generateToken(user);
+  // return generateToken(user);
+  const token = await generateToken(user);
+
+  return {
+    accessToken: token.accessToken,
+    refreshToken: token.refreshToken,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role
+    }
+  };
 }
 
 async function verifyEmail(token) {

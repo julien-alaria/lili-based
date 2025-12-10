@@ -33,8 +33,7 @@ async function listUsersExample() {
     // }
 
   try {
-    const response = await instance.get("/api/users"); // utilise instance pour la cohérence
-    return response.data;
+    const response = await instance.get("/api/users"); 
   } catch (error) {
     console.error("Erreur lors de la récupération des utilisateurs :", error);
     throw error;

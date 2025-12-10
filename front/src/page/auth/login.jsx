@@ -25,23 +25,39 @@ export default function Login() {
   })
 
   const loginMutation = useMutation({
-    mutationFn: async (newTodo) => {
-      return await signIn(newTodo)
-    },
-    onSuccess: (data, variables, context) => {
-      console.log("data", data)
-      localStorage.setItem("accessToken", data.data.token.accessToken)
-      localStorage.setItem("refreshToken", data.data.token.refreshToken)
-      window.location = "/me"
+    mutationFn: async (credentials) => signIn(credentials),
 
-    },
+    onSuccess: (data) => {
+    // console.log("LOGIN SUCCESS ===>", data);
 
-  })
+      const token = data.data.accessToken;
+      const user = data.data.user;
+
+      console.log("token :", token);
+      console.log("user :", user);
+
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("role", user.role);
+
+      switch (user.role) {
+        case "admin":
+          window.location = "/admin";
+          break;
+        case "association":
+          window.location = "/association";
+          break;
+        case "restaurateur":
+          window.location = "/restaurateur";
+          break;
+        default:
+          window.location = "/me";
+      }
+    }
+  });
 
   const onSubmit = (data) => {
     loginMutation.mutate(data)
   }
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

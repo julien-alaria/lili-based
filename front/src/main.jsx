@@ -8,8 +8,11 @@ import Home from "./page/home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Register from "./page/auth/register";
-import Admin from "./page/admin/Admin.jsx"
-import Me from "./page/Me.jsx"
+import Admin from "./page/admin/Admin.jsx";
+import Me from "./page/Me.jsx";
+import Associations from "./page/users/Associations.jsx";
+import Restaurateurs from "./page/users/Restaurateurs.jsx";
+
 // Point d’entrée React / Router
 
 const queryClient = new QueryClient({
@@ -33,6 +36,8 @@ ReactDOM.createRoot(root).render(
 
         <Route path="/admin" element={<Admin />} />
         <Route path="/me" element={<Me />} />
+        <Route path="association" element={<Associations />} />
+        <Route path="restaurateur" element={<Restaurateurs />} />
 
       </Routes>
       <ReactQueryDevtools initialIsOpen={false} />

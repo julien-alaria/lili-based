@@ -16,10 +16,6 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.coerce.number().default(60 * 24 * 7)
 })
 
-// Export the type derived from the schema
-
-// Validate `process.env` against our schema
-// and return the result
 let env
 try {
   env = envSchema.parse(process.env)
@@ -28,5 +24,4 @@ try {
   process.exit(1)
 }
 
-// Export the result so we can use it in the project
 export default env

@@ -1,5 +1,6 @@
 import { sign, verify } from "hono/jwt";
 import env from "../config/env.js";
+
 async function generateToken(user) {
   const accessToken = await sign(
     {
@@ -15,7 +16,7 @@ async function generateToken(user) {
   const refreshToken = await sign(
     {
       userId: user.id,
-
+      role: user.role,
       tokenType: 'refresh',
       exp: Math.floor(Date.now() / 1000) + 60 * env.JWT_EXPIRES_IN
     },

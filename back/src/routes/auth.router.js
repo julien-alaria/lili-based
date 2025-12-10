@@ -74,5 +74,19 @@ authRouter.get(
   }
 );
 
+authRouter.get(
+  "/asso",
+  authGuard(), (c) => {
+    c.get("user");
+    return c.json(user);
+  }
+)
+
+authRouter.get(
+  "/resto",
+  authGuard(), (c) => {
+    return c.json(user);
+  }
+)
 
 export default authRouter;

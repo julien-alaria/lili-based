@@ -1,4 +1,3 @@
-// backend/src/controllers/user.controller.js
 import UserService from '../services/user.service.js';
 
 export async function listUsers(c) {
@@ -25,12 +24,14 @@ export async function getUser(c) {
 
 export async function createUser(c) {
   try {
-    const data = await c.req.json(); // { name, email, password }
+    const data = await c.req.json();
+    console.log("Données reçues :", data);
+
     const user = await UserService.create(data);
     return c.json(user, 201);
   } catch (error) {
-    console.error(error);
-    return c.json({ error: 'Impossible de créer l’utilisateur' }, 400);
+    console.error("Erreur dans createUser :", error);
+    return c.json({ error: error.message }, 400);
   }
 }
 

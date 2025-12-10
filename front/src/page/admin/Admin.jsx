@@ -7,7 +7,7 @@ export default function Admin() {
     const queryClient = useQueryClient();
 
     // États pour création et modification
-    const [newUser, setNewUser] = useState({ name: '', email: '', password: '' });
+    const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: '' });
     const [editUser, setEditUser] = useState(null);
 
     // Mutation création
@@ -20,7 +20,7 @@ export default function Admin() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['listUser']);
-            setNewUser({ name: '', email: '', password: '' });
+            setNewUser({ name: '', email: '', password: '', role: 'association' });
         }
     });
 
@@ -149,6 +149,23 @@ export default function Admin() {
                 }}
                 className='block my-2 p-2 border'
             />
+
+            <select
+                value={editUser?.role ?? newUser?.role ?? 'association'}
+                onChange={e => {
+                    const value = e.target.value;
+                    if (editUser) {
+                    setEditUser({ ...editUser, role: value });
+                    } else {
+                    setNewUser({ ...newUser, role: value });
+                    }
+                }}
+                className="block my-2 p-2 border"
+                >
+                <option value="admin">Admin</option>
+                <option value="association">Association</option>
+                <option value="restaurateur">Restaurateur</option>
+            </select>
 
             <div className='mt-2'>
                 <button
