@@ -66,7 +66,7 @@ authRouter.get(
 );
 
 authRouter.get(
-  "/me",
+  "/associations",
   authGuard(),
   (c) => {
     const user = c.get("user");
@@ -75,18 +75,23 @@ authRouter.get(
 );
 
 authRouter.get(
-  "/asso",
-  authGuard(), (c) => {
-    c.get("user");
+  "/restaurateur",
+  authGuard(),
+  (c) => {
+    const user = c.get("user");
     return c.json(user);
   }
-)
+);
 
 authRouter.get(
-  "/resto",
-  authGuard(), (c) => {
+  "/me",
+  authGuard(),
+  (c) => {
+    const user = c.get("user");
     return c.json(user);
   }
-)
+);
+
+
 
 export default authRouter;

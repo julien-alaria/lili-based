@@ -10,123 +10,88 @@ open http://localhost:3000
 ```
 ## 🗂️ Arborescence du dossier `back/`
 
-back/
-├── node_modules/
-├── src/
-│ ├── config/
-│ │ ├── database.js
-│ │ └── env.js
-│ │
-│ ├── controllers/
-│ │ └── auth.controller.js
-│ │
-│ ├── middlewares/
-│ │ └── authguard.js
-│ │
-│ ├── routes/
-│ │ ├── auth.router.js
-│ │ ├── auth.test.js
-│ │ └── index.js
-│ │
-│ ├── services/
-│ │ └── auth.services.js
-│ │
-│ ├── test/
-│ │ └── setup.js
-│ │
-│ ├── utils/
-│ │ ├── email.js
-│ │ ├── email.test.js
-│ │ ├── jwt.js
-│ │ ├── mailer.js
-│ │ └── password.js
-│ │
-│ └── index.js
-│
-├── .env
-├── .gitignore
-├── mydb.db
-├── package-lock.json
-├── package.json
-├── README.md
-└── vitest.config.js
-
-
-1.Structure générale
-
-projet qui suit une structure assez standard pour un backend REST moderne :
-
-séparation config / controllers / services / routes
-
-usage d’une base SQLite (mydb.db)
-
-utilitaires dédiés (JWT, email, password hashing)
-
-middleware d’authentification
-
-tests via Vitest
-
-                               ┌───────────────┐
-                               │   Frontend    │
-                               │(React, Postman)│
-                               └───────┬───────┘
-                                       │ HTTP Request (ex: /api/register)
-                                       ▼
-┌────────────────────────────────────────────────────────────┐
-│                     [🟦 ROUTES]                             │
-│ back/src/routes/index.js                                    │
-│   • /api → authRouter                                      │
-│   • /authenticated → authGuard                              │
-└───────────────┬────────────────────────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│                  [🟦 AUTH ROUTER]                            │
-│ back/src/routes/auth.router.js                               │
-│   • POST /register, /login                                   │
-│   • POST /forgot-password, /reset-password                  │
-│   • POST /send-verification                                  │
-│   • GET /verify/:token                                        │
-│   • Valide JSON via Zod                                       │
-└───────────────┬────────────────────────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│               [🟦 CONTROLLER]                                 │
-│ back/src/controllers/auth.controller.js                     │
-│   • register / login / forgotPassword / resetPassword       │
-│   • sendVerification / verifyUserEmail                      │
-│   • Appelle [🟩 authService]                                  │
-│   • Retourne JSON succès / erreur                             │
-└───────────────┬────────────────────────────────────────────┘
-                │
-                ▼
-┌────────────────────────────────────────────────────────────┐
-│                [🟩 SERVICE]                                   │
-│ back/src/services/auth.service.js                            │
-│   • createUser / updateUser / deleteUser                     │
-│   • register / login / verifyEmail                            │
-│   • forgotPassword / resetPassword                            │
-│   • sendEmailVerification                                     │
-│   • Interagit avec :                                         │
-│       - [🟥 DB] database.js                                   │
-│       - [🟨 password.js]                                      │
-│       - [🟨 jwt.js]                                           │
-│       - [🟨 email.js] → [🟧 mailer.js]                        │
-└───────────────┬────────────────────────────────────────────┘
-                │
- ┌──────────────┴───────────────┐
- ▼                              ▼
-[🟥 DATABASE]                  [🟨 UTILITAIRES]
-back/src/config/database.js   back/src/utils/password.js
-• SQLite mydb.db              • hashPassword / comparePassword
-• Table users                 back/src/utils/jwt.js
-• CRUD users                   • generateToken / decodeToken
-                               back/src/utils/email.js
-                               • sendVerificationEmail
-                               • sendPasswordResetEmail
-                               back/src/utils/mailer.js
-                               • Nodemailer / SMTP
-                               back/src/middlewares/authguard.js
-                               • Vérifie JWT Bearer
-                               • Injecte user dans contexte
+lili-based/
+├─ back/
+│  ├─ src/
+│  │  ├─ config/
+│  │  │  ├─ database.js
+│  │  │  ├─ env.js
+│  │  │  └─ seed.js
+│  │  ├─ controllers/
+│  │  │  ├─ auth.controller.js
+│  │  │  └─ user.controller.js
+│  │  ├─ middlewares/
+│  │  │  └─ authguard.js
+│  │  ├─ routes/
+│  │  │  ├─ associations.router.js
+│  │  │  ├─ auth.router.js
+│  │  │  ├─ auth.test.js
+│  │  │  ├─ index.js
+│  │  │  └─ users.router.js
+│  │  ├─ services/
+│  │  │  ├─ associations.service.js
+│  │  │  ├─ auth.service.js
+│  │  │  └─ user.service.js
+│  │  ├─ test/
+│  │  │  └─ setup.js
+│  │  ├─ utils/
+│  │  │  ├─ email.js
+│  │  │  ├─ email.test.js
+│  │  │  ├─ jwt.js
+│  │  │  ├─ mailer.js
+│  │  │  └─ password.js
+│  │  ├─ db.js
+│  │  └─ index.js
+│  ├─ .env
+│  ├─ .gitignore
+│  ├─ mydb.db
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.md
+│  └─ vitest.config.js
+├─ front/
+│  ├─ public/
+│  │  └─ vite.svg
+│  ├─ src/
+│  │  ├─ api/
+│  │  │  ├─ auth.js
+│  │  │  └─ config.js
+│  │  ├─ assets/
+│  │  │  └─ react.svg
+│  │  ├─ components/
+│  │  │  └─ ui/
+│  │  │     ├─ button.jsx
+│  │  │     ├─ card.jsx
+│  │  │     └─ input.jsx
+│  │  ├─ layout/
+│  │  │  └─ Header.jsx
+│  │  ├─ lib/
+│  │  │  └─ utils.js
+│  │  ├─ page/
+│  │  │  ├─ admin/
+│  │  │  │  └─ Admin.jsx
+│  │  │  ├─ auth/
+│  │  │  │  ├─ login.jsx
+│  │  │  │  └─ register.jsx
+│  │  │  ├─ users/
+│  │  │  │  ├─ Associations.jsx
+│  │  │  │  └─ Restaurateurs.jsx
+│  │  │  └─ home.jsx
+│  │  ├─ index.css
+│  │  └─ main.jsx
+│  ├─ .env
+│  ├─ .gitignore
+│  ├─ components.json
+│  ├─ eslint.config.js
+│  ├─ index.html
+│  ├─ jsconfig.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ postcss.config.js
+│  ├─ README.md
+│  ├─ tailwind.config.js
+│  └─ vite.config.js
+├─ .gitignore
+├─ package-lock.json
+├─ package.json
+└─ readme.md

@@ -1,5 +1,6 @@
 import { sign, verify } from 'hono/jwt';
-import db from '../config/database.js';
+// import db from '../config/database.js';
+import db from '../db.js';
 import { sendPasswordResetEmail, sendVerificationEmail } from '../utils/email.js';
 import { decodeToken, generateToken } from '../utils/jwt.js';
 import { comparePassword, hashPassword } from '../utils/password.js';
@@ -24,10 +25,16 @@ async function createUser(data) {
     INSERT INTO users (email, password, name, verified, role)
     VALUES (?, ?, ?, ?, ?)
   `;
-  const role = data.role || 'user'; 
-  const values = [data.email, data.password, data.name, 1, role];
-  const result = await db.prepare(query).run(values);
-  return await db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
+
+  // rôle par défaut cohérent avec ton domaine
+  const role = data.role || 'association';
+
+  // s’assurer que le mot de passe est hashé
+  const hashedPassword = await hashPassword(data.password);
+
+  const values = [data.email, hashedPassword, data.name, 1, role];
+  const result = db.prepare(query).run(values);
+  return db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
 }
 
 async function updateUser(userId, data) {
@@ -51,33 +58,24 @@ async function updateUser(userId, data) {
 }
 
 async function register(data) {
-  // Vérifie si l'utilisateur existe déjà
   const existingUser = await findUserByEmail(data.email);
-
   if (existingUser) {
     throw new Error("User already exists");
   }
 
-  // Concatène firstname + lastname dans name
   data.name = `${data.firstname} ${data.lastname}`;
 
-  // Hash le mot de passe
   const hashedPassword = await hashPassword(data.password);
-  data.password = hashedPassword;
 
-   // Création de l'utilisateur dans la base
   const query = `
-    INSERT INTO users (email, password, name, verified)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (email, password, name, verified, role)
+    VALUES (?, ?, ?, ?, ?)
   `;
-  const values = [data.email, data.password, data.name, 0];
-  const result = await db.prepare(query).run(values);
+  const role = 'association'; // ou un rôle passé dans data.role si tu veux
+  const values = [data.email, hashedPassword, data.name, 0, role];
 
-  // Récupère l'utilisateur créé
-  const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
-
-  // Send verification email
-  // sendVerificationEmail(user.email);
+  const result = db.prepare(query).run(values);
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
 
   return user;
 }
@@ -193,7 +191,4 @@ export default {
   resetPassword,
   sendEmailVerification,
   findUserByEmail,
-  createUser,
-  updateUser,
-  deleteUser
 };
